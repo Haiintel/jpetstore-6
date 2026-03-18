@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: Catalog Search API
+  version: 1.0.0
+  description: Read-only API generated from the catalog search modernization config.
+paths:
+  /api/catalog/products/search:
+    get:
+      operationId: searchProducts
+      summary: Search catalog products by keyword
+      parameters:
+        - in: query
+          name: keyword
+          required: true
+          description: Free-text keyword used for case-insensitive product name search.
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: Matching products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Invalid keyword
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    SearchResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    Product:
+      type: object
+      required: [productId, name, description, categoryId]
+      properties:
+        productId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        categoryId:
+          type: string
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
